@@ -1,0 +1,19 @@
+{
+  "env": {
+    "node": true,         // enables Node.js global variables and scoping
+    "es2021": true        // enables modern ECMAScript features
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module"  // allows `import`/`export`
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "rules": {
+    // you can fine-tune other rules here...
+  },
+  "globals": {
+    "process": "readonly"   // explicitly allow `process` as a global
+  }
+}
