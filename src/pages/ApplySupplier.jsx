@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+
 const API_BASE = import.meta.env.VITE_API_URL || ''  // e.g. https://vietnord-api.onrender.com
 
 export default function ApplySupplier() {

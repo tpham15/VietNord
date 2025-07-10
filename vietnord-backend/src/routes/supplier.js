@@ -1,34 +1,37 @@
-// src/routes/supplier.js
-import express from 'express';
+import express from 'express'
 
 export default function supplierRoutes(supabase) {
-  const router = express.Router();
+  const router = express.Router()
 
   router.post('/', async (req, res) => {
-    const { name, email, company, website, message } = req.body;
+    const { name, email, company, website, products, message } = req.body
 
-    if (!name || !email) {
-      return res.status(400).json({ error: 'Name and email are required' });
+    if (!name || !email || !products) {
+      return res
+        .status(400)
+        .json({ error: 'Name, email and products are required' })
     }
 
     try {
-      const { data, error } = await supabase
+      const { data, error, status: sbStatus } = await supabase
         .from('suppliers')
-        .insert([{ name, email, company, website, message }]);
+        .insert([{ name, email, company, website, products, message }])
+        .select() // make sure data comes back
 
       if (error) {
-        console.error('Supabase insert error:', error);
-        return res.status(500).json({ error: error.message });
+        console.error('🥲 Supabase insert error:', { error, sbStatus })
+        return res.status(500).json({ error: error.message || 'Insert failed' })
       }
 
+      // success!
       return res
         .status(201)
-        .json({ message: 'Application received', supplier: data[0] });
+        .json({ message: 'Application received', supplier: data[0] })
     } catch (err) {
-      console.error('Unexpected error:', err);
-      return res.status(500).json({ error: 'Server error' });
+      console.error('🔥 Unexpected error in /api/supplier:', err)
+      return res.status(500).json({ error: 'Server error' })
     }
-  });
+  })
 
-  return router;
+  return router
 }
