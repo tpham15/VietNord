@@ -17,6 +17,20 @@ const resources = {
   sent:             "Sent!",
   error:            "Something went wrong. Please try again."
 },
+apply: {
+        title: "Apply to Become a Supplier",
+        description: "Interested in supplying? Fill out the form below.",
+        namePlaceholder: "Your Name",
+        emailPlaceholder: "Your Email",
+        companyPlaceholder: "Company Name",
+        websitePlaceholder: "Website (optional)",
+        productsPlaceholder: "Products You Supply",
+        messagePlaceholder: "Additional Information",
+        submit: "Submit Application",
+        sending: "Sending…",
+        sent: "Sent!",
+        error: "Something went wrong. Please try again."
+      },
       navbar: {
         logoAlt: "VietNord logo",
         home: "Home",
@@ -121,6 +135,20 @@ const resources = {
         sending:           "Đang Gửi…",
         sent:              "Đã Gửi!",
         error:             "Có lỗi xảy ra. Vui lòng thử lại."
+      },
+      apply: {
+        title: "Đăng Ký Trở Thành Nhà Cung Cấp",
+        description: "Quan tâm trở thành nhà cung cấp? Vui lòng điền thông tin dưới đây.",
+        namePlaceholder: "Tên của bạn",
+        emailPlaceholder: "Email của bạn",
+        companyPlaceholder: "Tên công ty",
+        websitePlaceholder: "Trang web (không bắt buộc)",
+        productsPlaceholder: "Sản phẩm cung cấp",
+        messagePlaceholder: "Thông tin bổ sung",
+        submit: "Gửi Đơn",
+        sending: "Đang Gửi…",
+        sent: "Đã Gửi!",
+        error: "Có lỗi xảy ra. Vui lòng thử lại."
       },
       navbar: {
         logoAlt: "Logo VietNord",
