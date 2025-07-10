@@ -126,6 +126,7 @@ const RequestSample = () => {
           <label className="block mb-1">{t('sample.notesPlaceholder')}</label>
           <textarea
             name="notes"
+            type="text"
             value={form.notes}
             onChange={handleChange}
             placeholder={t('sample.notesPlaceholder')}
