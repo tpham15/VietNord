@@ -1,6 +1,9 @@
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 // src/App.jsx
 import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+
 
 import Navbar          from './components/Navbar'
 import Footer          from './components/Footer'
@@ -27,6 +30,7 @@ const App = () => (
     </Routes>
     <ContactPage/>
     <Footer />
+    <ToastContainer position="top-right" autoClose={3000} />
   </div>
 )
 

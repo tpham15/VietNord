@@ -1,115 +1,98 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'react-toastify'
+
+const API_URL = import.meta.env.VITE_API_URL || ''
 
 const Contact = () => {
   const { t } = useTranslation()
-  const [form, setForm]     = useState({ name: '', email: '', message: '' })
-  const [errors, setErrors] = useState({})          // field validation errors
-  const [status, setStatus] = useState('')          // '', 'sending', 'success', 'error'
+  const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [loading, setLoading] = useState(false)
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
-    setErrors(prev => ({ ...prev, [name]: null }))  // clear field error on change
+    setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setStatus('sending')
-    setErrors({})
+    const { name, email, message } = form
 
-    // Front-end required-field check
-    const frontErrors = {}
-    if (!form.name.trim())    frontErrors.name    = t('contact.nameRequired')
-    if (!form.email.trim())   frontErrors.email   = t('contact.emailRequired')
-    if (!form.message.trim()) frontErrors.message = t('contact.messageRequired')
-    if (Object.keys(frontErrors).length) {
-      setErrors(frontErrors)
-      return setStatus('error')
+    if (!name || !email || !message) {
+      toast.error(t('contact.error'))
+      return
     }
 
+    setLoading(true)
     try {
-      const res = await fetch('/api/contact', {
-        method:  'POST',
+      const res = await fetch(`${API_URL}/api/contact`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(form),
+        body: JSON.stringify({ name, email, message })
       })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Server error')
 
-      if (res.status === 400) {
-        const data = await res.json()
-        setErrors(data.errors || {})
-        return setStatus('error')
-      }
-      if (!res.ok) throw new Error('Network error')
-
-      setStatus('success')
+      toast.success(t('contact.sent'))
       setForm({ name: '', email: '', message: '' })
     } catch (err) {
       console.error(err)
-      setStatus('error')
+      toast.error(t('contact.error'))
+    } finally {
+      setLoading(false)
     }
   }
 
-  let buttonText = t('contact.sendButton')
-  if (status === 'sending') buttonText = t('contact.sending')
-  else if (status === 'success') buttonText = t('contact.sent')
-
   return (
-    <section className="py-16 bg-white">
-      <div className="max-w-3xl mx-auto px-6 text-center">
-        <h2 className="montserrat-700 text-2xl mb-4">{t('contact.title')}</h2>
-        <p className="montserrat-400 text-gray-700 mb-6">{t('contact.description')}</p>
+    <section className="max-w-lg mx-auto p-6 bg-white rounded shadow">
+      <h1 className="text-2xl font-semibold mb-4">{t('contact.title')}</h1>
+      <p className="mb-6">{t('contact.description')}</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input
-              name="name"
-              type="text"
-              value={form.name}
-              onChange={handleChange}
-              placeholder={t('contact.namePlaceholder')}
-              className={`w-full p-3 border rounded focus:outline-none ${errors.name ? 'border-red-500' : ''}`}
-            />
-            {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name}</p>}
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block mb-1">{t('contact.namePlaceholder')}</label>
+          <input
+            type="text"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder={t('contact.namePlaceholder')}
+            className="w-full px-3 py-2 border rounded"
+          />
+        </div>
 
-          <div>
-            <input
-              name="email"
-              type="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder={t('contact.emailPlaceholder')}
-              className={`w-full p-3 border rounded focus:outline-none ${errors.email ? 'border-red-500' : ''}`}
-            />
-            {errors.email && <p className="text-red-600 text-sm mt-1">{errors.email}</p>}
-          </div>
+        <div>
+          <label className="block mb-1">{t('contact.emailPlaceholder')}</label>
+          <input
+            type="email"
+            name="email"
+            value={form.email}
+            onChange={handleChange}
+            placeholder={t('contact.emailPlaceholder')}
+            className="w-full px-3 py-2 border rounded"
+          />
+        </div>
 
-          <div>
-            <textarea
-              name="message"
-              rows={5}
-              value={form.message}
-              onChange={handleChange}
-              placeholder={t('contact.messagePlaceholder')}
-              className={`w-full p-3 border rounded focus:outline-none ${errors.message ? 'border-red-500' : ''}`}
-            />
-            {errors.message && <p className="text-red-600 text-sm mt-1">{errors.message}</p>}
-          </div>
+        <div>
+          <label className="block mb-1">{t('contact.messagePlaceholder')}</label>
+          <textarea
+            name="message"
+            value={form.message}
+            onChange={handleChange}
+            placeholder={t('contact.messagePlaceholder')}
+            rows={4}
+            className="w-full px-3 py-2 border rounded"
+          />
+        </div>
 
-          <button
-            type="submit"
-            disabled={status === 'sending'}
-            className="montserrat-600 w-full py-3 bg-[#C62828] text-white rounded-md hover:bg-red-600 transition"
-          >
-            {buttonText}
-          </button>
-
-          {status === 'error' && !Object.keys(errors).length && (
-            <p className="mt-4 text-red-600">{t('contact.error')}</p>
-          )}
-        </form>
-      </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-6 py-2 bg-[#005377] text-white rounded hover:bg-[#003f54] transition"
+        >
+          {loading ? t('contact.sending') : t('contact.sendButton')}
+        </button>
+      </form>
     </section>
   )
 }
