@@ -1,16 +1,25 @@
-import express from 'express';
-import SampleRequest from '../models/SampleRequest.js';
+import { Router } from 'express';
 
-const router = express.Router();
+export default function sampleRoutes(supabase) {
+  const router = Router();
 
-router.post('/', async (req, res) => {
-  try {
-    const reqDoc = new SampleRequest(req.body);
-    await reqDoc.save();
-    res.status(201).json({ message: 'Sample request saved' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+  router.post('/', async (req, res) => {
+    const { productId, name, email } = req.body;
+    if (!productId || !name || !email) {
+      return res.status(400).json({ error: 'productId, name & email required' });
+    }
 
-export default router;
+    const { data, error } = await supabase
+      .from('sample_requests')
+      .insert([{ product_id: productId, name, email }]);
+
+    if (error) {
+      console.error('Supabase insert error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.status(201).json({ message: 'Sample request saved', id: data[0].id });
+  });
+
+  return router;
+}

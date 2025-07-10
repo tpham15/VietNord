@@ -1,33 +1,46 @@
-// vietnord-backend/src/routes/contact.js
-import express from 'express'
-import Contact from '../models/Contact.js'
+// src/routes/contact.js
+import { Router } from 'express';
 
-const router = express.Router()
+export default function contactRoutes(supabase) {
+  const router = Router();
 
-// POST /api/contact
-router.post('/', async (req, res) => {
-  const { name, email, message } = req.body
+  // POST /api/contact
+  router.post('/', async (req, res) => {
+    const { name, email, message } = req.body;
 
-  // Basic validation
-  if (!name || !email || !message) {
-    return res
-      .status(400)
-      .json({ error: 'Name, email and message are all required.' })
-  }
+    // basic validation
+    if (!name || !email || !message) {
+      return res
+        .status(400)
+        .json({ error: 'Fields name, email and message are all required.' });
+    }
 
-  try {
-    // Create & save in one step; returns the created document
-    const doc = await Contact.create({ name, email, message })
+    // insert and return the new row
+    const { data: inserted, error } = await supabase
+      .from('contacts')
+      .insert([{ name, email, message }])
+      .select();            // <-- ask Supabase to return the inserted record
 
-    return res
-      .status(201)
-      .json({ message: 'Contact saved successfully.', id: doc._id })
-  } catch (err) {
-    console.error('❌ POST /api/contact failed:', err)
-    return res
-      .status(500)
-      .json({ error: 'Server error, please try again later.' })
-  }
-})
+    if (error) {
+      console.error('Supabase insert error:', error);
+      return res.status(500).json({ error: error.message });
+    }
 
-export default router
+    // guard against null or empty returned data
+    if (!inserted || inserted.length === 0) {
+      console.error('No rows returned after insert.');
+      return res
+        .status(500)
+        .json({ error: 'Insert succeeded but no record was returned.' });
+    }
+
+    // success
+    const contact = inserted[0];
+    res.status(201).json({
+      message: 'Contact saved',
+      contact,            // full row you just inserted
+    });
+  });
+
+  return router;
+}
