@@ -19,6 +19,8 @@ console.log('> PORT        =', PORT);
 app.use('/api/sample', sampleRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/sample',  sampleRoutes);
+app.get('/api/health', (_req, res) => res.json({ ok: true }));
+
 
 mongoose.connect('mongodb://localhost:27017/vietnord')
   .then(() => console.log('✅ Connected to MongoDB'))
