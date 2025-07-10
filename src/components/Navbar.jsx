@@ -127,28 +127,7 @@ const Navbar = () => {
           <option value="vi">VI</option>
         </select>
 
-        {/* Profile */}
-        <div ref={profileRef} className="relative">
-          <button
-            onClick={() => setProfileVisible(v => !v)}
-            aria-haspopup="true"
-            aria-expanded={profileVisible}
-            aria-label={t('navbar.profileMenu')}
-            className="p-2 focus:outline-none"
-          >
-            <img src={assets.profile_icon} className="w-5" alt={t('navbar.profileIconAlt')} />
-          </button>
-          {profileVisible && (
-            <div className="absolute right-0 top-full mt-2 w-36 bg-slate-100 text-gray-500 rounded shadow-lg z-50">
-              <button className="block w-full text-left px-5 py-2 hover:text-black focus:outline-none">
-                {t('navbar.myProfiles')}
-              </button>
-              <button className="block w-full text-left px-5 py-2 hover:text-black focus:outline-none">
-                {t('navbar.logout')}
-              </button>
-            </div>
-          )}
-        </div>
+       
 
         {/* Mobile Menu Toggle */}
         <button
