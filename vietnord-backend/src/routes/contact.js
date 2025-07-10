@@ -1,46 +1,43 @@
-// src/routes/contact.js
-import { Router } from 'express';
+// vietnord-backend/src/routes/contact.js
+import express from 'express'
 
+/**
+ * contactRoutes(supabase) → Express.Router
+ * @param {import('@supabase/supabase-js').SupabaseClient} supabase
+ */
 export default function contactRoutes(supabase) {
-  const router = Router();
+  const router = express.Router()
 
   // POST /api/contact
   router.post('/', async (req, res) => {
-    const { name, email, message } = req.body;
+    const { name, email, message } = req.body
 
     // basic validation
     if (!name || !email || !message) {
-      return res
-        .status(400)
-        .json({ error: 'Fields name, email and message are all required.' });
+      return res.status(400).json({ error: 'name, email and message are all required' })
     }
 
-    // insert and return the new row
-    const { data: inserted, error } = await supabase
-      .from('contacts')
-      .insert([{ name, email, message }])
-      .select();            // <-- ask Supabase to return the inserted record
+    try {
+      const { data, error } = await supabase
+        .from('contacts')        // ← make sure you have a table called "contacts"
+        .insert({ name, email, message })
+        .select()                // return the inserted row(s)
 
-    if (error) {
-      console.error('Supabase insert error:', error);
-      return res.status(500).json({ error: error.message });
+      if (error) {
+        console.error('Supabase insert error:', error)
+        return res.status(500).json({ error: error.message })
+      }
+
+      // data is an array; return the first inserted record
+      return res.status(201).json({
+        message: 'Contact saved',
+        contact: data[0]
+      })
+    } catch (err) {
+      console.error('Unexpected error in /api/contact:', err)
+      return res.status(500).json({ error: 'Server error' })
     }
+  })
 
-    // guard against null or empty returned data
-    if (!inserted || inserted.length === 0) {
-      console.error('No rows returned after insert.');
-      return res
-        .status(500)
-        .json({ error: 'Insert succeeded but no record was returned.' });
-    }
-
-    // success
-    const contact = inserted[0];
-    res.status(201).json({
-      message: 'Contact saved',
-      contact,            // full row you just inserted
-    });
-  });
-
-  return router;
+  return router
 }
