@@ -15,7 +15,10 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 const app = express()
 
 // Middleware
-app.use(cors())
+app.use(cors({
+  origin: ['https://www.vietnord.com', 'https://vietnord.com']
+}));
+
 app.use(express.json())
 
 // Health check
@@ -24,8 +27,9 @@ app.get('/health', (_req, res) => {
 })
 
 // Mount your Supabase‐backed routes
-app.use('/api/contact', contactRoutes(supabase))
-app.use('/api/sample',  sampleRoutes(supabase))
+const api = import.meta.env.VITE_API_URL;
+app.use(`${api}/api/contact`, contactRoutes(supabase))
+app.use(`${api}/api/sample`,  sampleRoutes(supabase))
 
 // 404 handler
 app.use((req, res) => {
