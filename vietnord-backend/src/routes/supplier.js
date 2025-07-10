@@ -1,35 +1,34 @@
-import express from 'express'
+// src/routes/supplier.js
+import express from 'express';
 
-export default (supabase) => {
-  const router = express.Router()
+export default function supplierRoutes(supabase) {
+  const router = express.Router();
 
-  // POST /api/supplier
   router.post('/', async (req, res) => {
-    const { name, email, company, website, products, message } = req.body
+    const { name, email, company, website, message } = req.body;
 
-    // basic validation
-    if (!name || !email || !company || !products) {
-      return res
-        .status(400)
-        .json({ error: 'name, email, company & products required' })
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Name and email are required' });
     }
 
     try {
       const { data, error } = await supabase
-        .from('supplier')
-        .insert([{ name, email, company, website, products, message }])
+        .from('suppliers')
+        .insert([{ name, email, company, website, message }]);
 
-      if (error) throw error
+      if (error) {
+        console.error('Supabase insert error:', error);
+        return res.status(500).json({ error: error.message });
+      }
 
-      res.status(201).json({
-        message: 'Application submitted',
-        supplier: data[0]
-      })
+      return res
+        .status(201)
+        .json({ message: 'Application received', supplier: data[0] });
     } catch (err) {
-      console.error('❌ POST /api/supplier failed:', err)
-      res.status(500).json({ error: 'Server error' })
+      console.error('Unexpected error:', err);
+      return res.status(500).json({ error: 'Server error' });
     }
-  })
+  });
 
-  return router
+  return router;
 }

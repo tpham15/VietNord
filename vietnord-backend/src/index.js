@@ -27,7 +27,7 @@ app.use(express.json())
 // 3) Routes
 app.use('/api/contact', contactRoutes(supabase))
 app.use('/api/sample' , sampleRoutes(supabase))
-app.use('/api/apply-supplier', supplierRoutes(supabase))
+app.use('/api/supplier', supplierRoutes(supabase))
 
 // 4) Healthcheck
 app.get('/health', (_req, res) => res.json({ up: true }))
