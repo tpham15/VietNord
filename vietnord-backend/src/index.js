@@ -1,32 +1,34 @@
-/* src/index.js */
-import 'dotenv/config';            // loads process.env from .env locally
-import express      from 'express';
-import cors         from 'cors';
-import { createClient } from '@supabase/supabase-js';
+// src/index.js
+import express from 'express'
+import cors from 'cors'
+import { createClient } from '@supabase/supabase-js'
+import { SUPABASE_URL, SUPABASE_KEY, PORT, CORS_ORIGIN } from './config.js'
+import contactRoutes from './routes/contact.js'
+import sampleRoutes  from './routes/sample.js'
 
-import { SUPABASE_URL, SUPABASE_KEY, PORT, FRONTEND_URL } from './config.js';
-import contactRoutes                        from './routes/contact.js';
-import sampleRoutes                         from './routes/sample.js';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+const app       = express()
 
-// initialize
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-const app      = express();
+// 1) CORS: only allow your Netlify domain (or use '*' to allow all)
+app.use(
+  cors({
+    origin: CORS_ORIGIN,          // e.g. "https://www.vietnord.com"
+    methods: ['GET','POST','OPTIONS'],
+    allowedHeaders: ['Content-Type','Authorization']
+  })
+)
 
-// CORS — only allow your frontend domain
-app.use(cors({
-  origin: FRONTEND_URL,
-}));
+// 2) JSON parser
+app.use(express.json())
 
-app.use(express.json());
+// 3) Routes
+app.use('/api/contact', contactRoutes(supabase))
+app.use('/api/sample' , sampleRoutes(supabase))
 
-// health check
-app.get('/health', (_req, res) => res.json({ up: true }));
+// 4) Healthcheck
+app.get('/health', (_req, res) => res.json({ up: true }))
 
-// mount the routes (each returns a router factory that takes `supabase` as an arg)
-app.use('/api/contact', contactRoutes(supabase));
-app.use('/api/sample',  sampleRoutes(supabase));
-
-// start
+// 5) Start
 app.listen(PORT, () => {
-  console.log(`🚀 Backend listening on http://localhost:${PORT}`);
-});
+  console.log(`🚀 Server listening on port ${PORT}`)
+})
