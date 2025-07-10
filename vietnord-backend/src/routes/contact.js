@@ -8,7 +8,7 @@ const router = express.Router()
 router.post('/', async (req, res) => {
   const { name, email, message } = req.body
 
-  // 1) basic validation
+  // Basic validation
   if (!name || !email || !message) {
     return res
       .status(400)
@@ -16,16 +16,17 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // 2) create & save
-    const contact = new Contact({ name, email, message })
-    await contact.save()
+    // Create & save in one step; returns the created document
+    const doc = await Contact.create({ name, email, message })
 
-    // 3) respond
-    return res.status(201).json({ message: 'Contact saved' })
+    return res
+      .status(201)
+      .json({ message: 'Contact saved successfully.', id: doc._id })
   } catch (err) {
-    // 4) log & respond
     console.error('❌ POST /api/contact failed:', err)
-    return res.status(500).json({ error: 'Server error' })
+    return res
+      .status(500)
+      .json({ error: 'Server error, please try again later.' })
   }
 })
 
