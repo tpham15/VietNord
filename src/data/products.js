@@ -56,3 +56,4 @@ export const products = [
     moq: "150kg",
   },
 ];
+export default products;
