@@ -1,30 +1,34 @@
-// src/routes/supplier.js
 import express from 'express'
 
-export default function supplierRoutes(supabase) {
+export default (supabase) => {
   const router = express.Router()
 
+  // POST /api/supplier
   router.post('/', async (req, res) => {
     const { name, email, company, website, products, message } = req.body
+
+    // basic validation
     if (!name || !email || !company || !products) {
       return res
         .status(400)
         .json({ error: 'name, email, company & products required' })
     }
 
-    const payload = { name, email, company, website, products, message }
-    const { data, error } = await supabase
-      .from('supplier_applications')
-      .insert([payload])
-      .select('*')
-      .single()
+    try {
+      const { data, error } = await supabase
+        .from('supplier')
+        .insert([{ name, email, company, website, products, message }])
 
-    if (error) {
-      console.error('supplier insert error', error)
-      return res.status(500).json({ error: 'Server error' })
+      if (error) throw error
+
+      res.status(201).json({
+        message: 'Application submitted',
+        supplier: data[0]
+      })
+    } catch (err) {
+      console.error('❌ POST /api/supplier failed:', err)
+      res.status(500).json({ error: 'Server error' })
     }
-
-    res.status(201).json({ message: 'Application received', application: data })
   })
 
   return router

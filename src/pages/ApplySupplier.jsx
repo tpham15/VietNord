@@ -1,8 +1,9 @@
-// src/pages/ApplySupplier.jsx
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-const API_URL = import.meta.env.VITE_API_URL || ''
-const ApplySupplier = () => {
+
+const API_BASE = import.meta.env.VITE_API_URL || ''  // e.g. https://vietnord-api.onrender.com
+
+export default function ApplySupplier() {
   const { t } = useTranslation()
   const [form, setForm] = useState({
     name: '',
@@ -12,62 +13,53 @@ const ApplySupplier = () => {
     products: '',
     message: ''
   })
-  const [status, setStatus] = useState('') // '', 'sending', 'success', 'error'
+  const [status, setStatus] = useState('') // '', 'sending','sent','error'
 
   const handleChange = e => {
-    const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
+    setForm(f => ({ ...f, [e.target.name]: e.target.value }))
   }
 
   const handleSubmit = async e => {
     e.preventDefault()
     setStatus('sending')
     try {
-      // we don't assign to `res` because we don't need to inspect it here
-      await fetch('https://vietnord-api.onrender.com/api/supplier', {
+      const res = await fetch(`${API_BASE}/api/supplier`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(form)
       })
-      setStatus('success')
-      setForm({
-        name: '',
-        email: '',
-        company: '',
-        website: '',
-        products: '',
-        message: ''
-      })
-    } catch (err) {
-      console.error(err)
+      if (!res.ok) throw new Error('Network error')
+      setStatus('sent')
+      setForm({ name: '', email: '', company: '', website: '', products: '', message: '' })
+    } catch {
       setStatus('error')
     }
   }
 
-  // button text logic
-  let buttonText = t('apply.submit')           // e.g. “Submit Application”
-  if (status === 'sending') buttonText = t('apply.sending')   // e.g. “Sending…”
-  else if (status === 'success') buttonText = t('apply.sent')  // e.g. “Sent!”
+  // Extract button text logic out of JSX to avoid nested ternary
+  let buttonText
+  if (status === 'sending') {
+    buttonText = t('apply.sending')
+  } else if (status === 'sent') {
+    buttonText = t('apply.sent')
+  } else {
+    buttonText = t('apply.submit')
+  }
 
   return (
     <section className="py-16 bg-white">
-      <div className="max-w-3xl mx-auto px-6 text-center">
-        <h2 className="montserrat-700 text-2xl mb-4">{t('apply.title')}</h2>
-        <p className="montserrat-400 text-gray-700 mb-6">
-          {t('apply.description')}
-        </p>
-
+      <div className="max-w-md mx-auto px-6 text-center">
+        <h2 className="text-2xl font-bold mb-4">{t('apply.title')}</h2>
+        <p className="mb-6">{t('apply.description')}</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             name="name"
             value={form.name}
             onChange={handleChange}
-            type="text"
             placeholder={t('apply.namePlaceholder')}
             required
-            className="w-full p-3 border rounded focus:outline-none"
+            className="w-full p-3 border rounded"
           />
-
           <input
             name="email"
             value={form.email}
@@ -75,62 +67,52 @@ const ApplySupplier = () => {
             type="email"
             placeholder={t('apply.emailPlaceholder')}
             required
-            className="w-full p-3 border rounded focus:outline-none"
+            className="w-full p-3 border rounded"
           />
-
           <input
             name="company"
             value={form.company}
             onChange={handleChange}
-            type="text"
             placeholder={t('apply.companyPlaceholder')}
             required
-            className="w-full p-3 border rounded focus:outline-none"
+            className="w-full p-3 border rounded"
           />
-
           <input
             name="website"
             value={form.website}
             onChange={handleChange}
-            type="url"
             placeholder={t('apply.websitePlaceholder')}
-            className="w-full p-3 border rounded focus:outline-none"
+            className="w-full p-3 border rounded"
           />
-
           <input
             name="products"
             value={form.products}
             onChange={handleChange}
-            type="text"
             placeholder={t('apply.productsPlaceholder')}
             required
-            className="w-full p-3 border rounded focus:outline-none"
+            className="w-full p-3 border rounded"
           />
-
           <textarea
             name="message"
             value={form.message}
             onChange={handleChange}
-            rows={5}
             placeholder={t('apply.messagePlaceholder')}
-            className="w-full p-3 border rounded focus:outline-none"
+            className="w-full p-3 border rounded"
           />
 
           <button
             type="submit"
             disabled={status === 'sending'}
-            className="montserrat-600 w-full py-3 bg-[#005377] text-white rounded-md hover:bg-[#004a62] transition"
+            className="w-full py-3 bg-blue-600 text-white rounded"
           >
             {buttonText}
           </button>
 
           {status === 'error' && (
-            <p className="mt-4 text-red-600">{t('apply.error')}</p>
+            <p className="text-red-600">{t('apply.error')}</p>
           )}
         </form>
       </div>
     </section>
   )
 }
-
-export default ApplySupplier
