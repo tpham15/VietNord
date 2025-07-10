@@ -1,26 +1,39 @@
-import express from 'express';
-import Contact from '../models/Contact.js';
+// src/routes/contact.js
+import express from 'express'
+import Contact from '../models/Contact.js'
 
-const router = express.Router();
+const router = express.Router()
 
+/**
+ * POST /api/contact
+ * Body: { name, email, message }
+ */
 router.post('/', async (req, res) => {
-  try {
-    // Attempt to save, Mongoose will run schema validations
-    const contact = new Contact(req.body);
-    await contact.save();
-    res.status(201).json({ message: 'Contact saved' });
-  } catch (err) {
-    if (err.name === 'ValidationError') {
-      // Build a field-to-message map
-      const errors = Object.entries(err.errors).reduce((map, [field, { message }]) => {
-        map[field] = message;
-        return map;
-      }, {});
-      return res.status(400).json({ errors });
-    }
-    console.error(err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
+  const { name, email, message } = req.body
 
-export default router;
+  // 1. Validate required fields
+  if (!name || !email || !message) {
+    return res.status(400).json({
+      error: 'Missing required fields: name, email, and message are all required.'
+    })
+  }
+
+  try {
+    // 2. Save to MongoDB
+    const contact = new Contact({ name, email, message })
+    await contact.save()
+
+    // 3. Success response
+    return res.status(201).json({ message: 'Contact saved' })
+  } catch (err) {
+    // 4. Log full stack for debugging
+    console.error('❌ POST /api/contact failed:', err)
+
+    // 5. Return real error message (or a fallback)
+    return res.status(500).json({
+      error: err.message || 'Server error'
+    })
+  }
+})
+
+export default router
