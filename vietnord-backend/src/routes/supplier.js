@@ -12,7 +12,7 @@ export default function supplierRoutes(supabase) {
 
     try {
       const { data, error } = await supabase
-        .from('supplier')
+        .from('supplier_applications')
         .insert([{ name, email, company, website, products, message }]);
 
       if (error) {
