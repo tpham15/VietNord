@@ -55,8 +55,8 @@ apply: {
       },
       hero: {
         alt: "VietNord Bridge Illustration",
-        headline: "Connecting Vietnam’s Specialty Foods to the Nordics",
-        subhead: "Directly source premium Vietnamese food and agricultural products — sample first, ship fast.",
+        headline: "“Connecting Vietnam’s Specialty Foods to the Nordics with Zero‑Waste Logistics”",
+        subhead: "Directly source premium Vietnamese food and agricultural products — sample first, ship with zero‑waste, low‑carbon logistics.",
         ctaRequest: "Request a Sample",
         ctaSupplier: "Become a Supplier"
       },
@@ -174,8 +174,8 @@ apply: {
       },
       hero: {
         alt: "Minh họa cầu VietNord",
-        headline: "Kết nối thực phẩm đặc sản Việt Nam đến thị trường Bắc Âu",
-        subhead: "Nhập nguồn trực tiếp các sản phẩm nông thủy sản cao cấp — nhận mẫu trước, vận chuyển nhanh.",
+        headline: "“Kết nối đặc sản Việt Nam với Bắc Âu qua chuỗi logistics không chất thải”",
+        subhead: "Tìm nguồn trực tiếp thực phẩm và nông sản cao cấp Việt Nam — thử mẫu trước, giao hàng nhanh qua chuỗi logistics không chất thải và phát thải thấp.",
         ctaRequest: "Yêu Cầu Mẫu",
         ctaSupplier: "Trở thành Nhà Cung Cấp"
       },
