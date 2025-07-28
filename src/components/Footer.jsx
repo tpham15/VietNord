@@ -38,8 +38,8 @@ const Footer = () => {
           <p className="text-sm mb-1">
             📧 <a href="mailto:contact@vietnord.com" className="hover:underline">contact@vietnord.com</a>
           </p>
-          <p className="text-sm mb-1">📞 +358 465216830</p>
-          <p className="text-sm mb-4">📍 Bioraintie 2, 00380 Helsinki, Finland</p>
+          <p className="text-sm mb-1">📞 +358 413134414</p>
+          <p className="text-sm mb-4">📍 Hameenkatu 11A, Tampere, Finland</p>
           <form className="flex">
             <input
               type="email"
