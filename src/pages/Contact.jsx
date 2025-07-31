@@ -73,18 +73,6 @@ const Contact = () => {
           />
         </div>
 
-        <div>
-          <label className="block mb-1">{t('contact.messagePlaceholder')}</label>
-          <textarea
-            name="message"
-            value={form.message}
-            onChange={handleChange}
-            placeholder={t('contact.messagePlaceholder')}
-            rows={4}
-            className="w-full px-3 py-2 border rounded"
-          />
-        </div>
-
         <button
           type="submit"
           disabled={loading}
