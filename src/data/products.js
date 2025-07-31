@@ -7,8 +7,8 @@ export const products = [
     category: "Coffee",
     origin: "Dak Lak",
     img: images.robustaDakLak,
-    price: 2.80,
-    moq: "500kg",
+    price: "contact",
+    moq: "kg",
   },
   {
     id: 2,
@@ -16,8 +16,8 @@ export const products = [
     category: "Cashew",
     origin: "Binh Phuoc",
     img: images.cashewBinhPh,
-    price: 5.50,
-    moq: "200kg",
+    price: "contact",
+    moq: "kg",
   },
   {
     id: 3,
@@ -25,8 +25,8 @@ export const products = [
     category: "Pepper",
     origin: "Phu Quoc",
     img: images.pepperPhuQuoc,
-    price: 4.20,
-    moq: "300kg",
+    price: "contact",
+    moq: "kg",
   },
   {
     id: 4,
@@ -34,8 +34,8 @@ export const products = [
     category: "Tea",
     origin: "Thai Nguyen",
     img: images.lotusTea,
-    price: 12.00,
-    moq: "100kg",
+    price: "contact",
+    moq: "kg",
   },
   {
     id: 5,
@@ -43,8 +43,8 @@ export const products = [
     category: "Spices",
     origin: "Thanh Hoa",
     img: images.cinnamonTH,
-    price: 3.00,
-    moq: "250kg",
+    price: "contact",
+    moq: "kg",
   },
   {
     id: 6,
@@ -52,8 +52,8 @@ export const products = [
     category: "Fruits",
     origin: "Tien Giang",
     img: images.driedMango,
-    price: 6.00,
-    moq: "150kg",
+    price: "contact",
+    moq: "kg",
   },
 ];
 export default products;
